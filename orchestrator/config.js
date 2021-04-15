@@ -62,8 +62,8 @@ let config = {
             },
             dojot: {
                 subscriptionHoldoff: Number(process.env.DOJOT_SUBSCRIPTION_HOLDOFF) || 2500,
-                timeoutSleep: 5,
-                connectionRetries: 5
+                timeoutSleep: 10,
+                connectionRetries: 20
             }
         },
         databroker: {

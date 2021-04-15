@@ -4,6 +4,8 @@ WORKDIR /opt/flowbroker/orchestrator
 
 RUN apk --no-cache add gcc g++ musl-dev make python bash zlib-dev
 
+ENV DOCKERIZE_VERSION v0.6.1
+
 COPY orchestrator/package.json ./package.json
 COPY orchestrator/package-lock.json ./package-lock.json
 RUN npm install
@@ -17,7 +19,12 @@ COPY --from=basis /opt/flowbroker/orchestrator /opt/flowbroker/orchestrator
 WORKDIR /opt/flowbroker/orchestrator
 COPY orchestrator ./src
 
-CMD ["node", "src/index.js",  "-s"]
+RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz
+RUN tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz
+
+CMD dockerize -wait tcp://rabbitmq:5672 node src/index.js -s
+
+#CMD ["node", "src/index.js",  "-s"]
 #CMD ["node", "--inspect-brk=0.0.0.0:9229","src/index.js",  "-s"]
 #CMD ["node_modules/.bin/nodemon", "--inspect-brk=0.0.0.0:9229", "src/index.js"]
 
